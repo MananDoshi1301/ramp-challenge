@@ -121,6 +121,8 @@ hr.RampBreak--l {
   font-weight: bold;
 }
 
+/* Input CSS */
+/* --------------------------------------------------------------- */
 .RampInputCheckbox--container {
   display: flex;
 }
@@ -152,6 +154,8 @@ hr.RampBreak--l {
 .RampInputCheckbox--input {
   display: none;
 }
+
+/* --------------------------------------------------------------- */
 
 .RampButton {
   border: 1px solid var(--color-light-shade);
