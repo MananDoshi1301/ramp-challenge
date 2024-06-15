@@ -24,9 +24,10 @@ export function App() {
     transactionsByEmployeeUtils.invalidateData()
 
     await employeeUtils.fetchAll()
-    await paginatedTransactionsUtils.fetchAll()
-
+    // Bug 5 fixed
     setIsLoading(false)
+    await paginatedTransactionsUtils.fetchAll()
+    // console.log("Employees:",employees)
   }, [employeeUtils, paginatedTransactionsUtils, transactionsByEmployeeUtils])
 
   const loadTransactionsByEmployee = useCallback(
@@ -37,8 +38,14 @@ export function App() {
     [paginatedTransactionsUtils, transactionsByEmployeeUtils]
   )
 
-  const loadAll = () => {
-    loadAllTransactions()
+  // FIXED: Bug 3 Func
+  const loadAll = async () => {
+    await loadAllTransactions()
+  }
+
+  // TODO: Bug 4 Extract more data
+  const viewMoreData = () => {
+    console.log(employees)
   }
 
   useEffect(() => {
@@ -84,7 +91,8 @@ export function App() {
               className="RampButton"
               disabled={paginatedTransactionsUtils.loading}
               onClick={async () => {
-                await loadAllTransactions()
+                viewMoreData()
+                // await loadAllTransactions()
               }}
             >
               View More
