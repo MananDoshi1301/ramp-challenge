@@ -19,21 +19,23 @@ export function App() {
     [paginatedTransactions, transactionsByEmployee]
   )
 
-  const loadAllTransactions = useCallback(async () => {
+  
+  const loadAllTransactions = useCallback(async (viewMore = false) => {
     setIsLoading(true)
     transactionsByEmployeeUtils.invalidateData()
 
-    await employeeUtils.fetchAll()
-    // Bug 5 fixed
+    await employeeUtils.fetchAll(viewMore)
+    // FIXED: Bug 5 ViewMore
     setIsLoading(false)
-    await paginatedTransactionsUtils.fetchAll()
-    // console.log("Employees:",employees)
+    await paginatedTransactionsUtils.fetchAll(viewMore)
   }, [employeeUtils, paginatedTransactionsUtils, transactionsByEmployeeUtils])
 
   const loadTransactionsByEmployee = useCallback(
     async (employeeId: string) => {
+      setIsLoading(true)
       paginatedTransactionsUtils.invalidateData()
       await transactionsByEmployeeUtils.fetchById(employeeId)
+      setIsLoading(false)
     },
     [paginatedTransactionsUtils, transactionsByEmployeeUtils]
   )
@@ -41,12 +43,7 @@ export function App() {
   // FIXED: Bug 3 Func
   const loadAll = async () => {
     await loadAllTransactions()
-  }
-
-  // TODO: Bug 4 Extract more data
-  const viewMoreData = () => {
-    console.log(employees)
-  }
+  }  
 
   useEffect(() => {
     if (employees === null && !employeeUtils.loading) {
@@ -86,13 +83,14 @@ export function App() {
         <div className="RampGrid">
           <Transactions transactions={transactions} />
 
-          {transactions !== null && (
+          {/* Bug 6 no view more after no more records left */}
+          {(paginatedTransactions === null || paginatedTransactions?.nextPage) && transactions !== null  && !isLoading && (
             <button
               className="RampButton"
               disabled={paginatedTransactionsUtils.loading}
               onClick={async () => {
-                viewMoreData()
-                // await loadAllTransactions()
+                // viewMoreData()
+                await loadAllTransactions(true)
               }}
             >
               View More

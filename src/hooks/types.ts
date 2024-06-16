@@ -7,7 +7,7 @@ type UseTypeBaseResult<TValue> = {
 }
 
 type UseTypeBaseAllResult<TValue> = UseTypeBaseResult<TValue> & {
-  fetchAll: () => Promise<void>
+  fetchAll: (viewMore: boolean) => Promise<void>
 }
 
 type UseTypeBaseByIdResult<TValue> = UseTypeBaseResult<TValue> & {

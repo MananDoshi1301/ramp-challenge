@@ -23,7 +23,6 @@ export function InputSelect<TItem>({
   const onChange = useCallback<InputSelectOnChange<TItem>>(
     (selectedItem) => {
       if (selectedItem === null) {
-        alert("Empty Item selected!")
         return
       }
 
