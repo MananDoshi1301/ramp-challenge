@@ -13,6 +13,8 @@ export function App() {
   const { data: paginatedTransactions, ...paginatedTransactionsUtils } = usePaginatedTransactions()
   const { data: transactionsByEmployee, ...transactionsByEmployeeUtils } = useTransactionsByEmployee()
   const [isLoading, setIsLoading] = useState(false)
+  // FIXED: Bug 6 part 1, view more not visible with user filter
+  const [viewMoreVisibility, setViewMoreVisibility] = useState(true)
 
   const transactions = useMemo(
     () => paginatedTransactions?.data ?? transactionsByEmployee ?? null,
@@ -22,6 +24,7 @@ export function App() {
   
   const loadAllTransactions = useCallback(async (viewMore = false) => {
     setIsLoading(true)
+    setViewMoreVisibility(true);
     transactionsByEmployeeUtils.invalidateData()
 
     await employeeUtils.fetchAll(viewMore)
@@ -32,6 +35,7 @@ export function App() {
 
   const loadTransactionsByEmployee = useCallback(
     async (employeeId: string) => {
+      setViewMoreVisibility(false);
       setIsLoading(true)
       paginatedTransactionsUtils.invalidateData()
       await transactionsByEmployeeUtils.fetchById(employeeId)
@@ -84,12 +88,11 @@ export function App() {
           <Transactions transactions={transactions} />
 
           {/* Bug 6 no view more after no more records left */}
-          {(paginatedTransactions === null || paginatedTransactions?.nextPage) && transactions !== null  && !isLoading && (
+          {(paginatedTransactions === null || paginatedTransactions?.nextPage) && viewMoreVisibility && transactions !== null  && !isLoading && (
             <button
               className="RampButton"
               disabled={paginatedTransactionsUtils.loading}
               onClick={async () => {
-                // viewMoreData()
                 await loadAllTransactions(true)
               }}
             >
